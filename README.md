@@ -13,7 +13,11 @@ pip3 install ftplib
 
 python3 ssb.py
 
+
+
+
 Techincal details:
+
 +Uses DNS resolving instead of scanning a specific port.
 
 
