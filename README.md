@@ -16,6 +16,10 @@ pip3 install ftplib
 
 pip3 install paramiko
 
+sudo apt-get install libmariadb3 libmariadb-dev
+
+pip3 install mariadb
+
 python3 ssb.py
 
 
