@@ -4,9 +4,13 @@ SSB is a tool that bruteforces subdomains based on dns records.
 SSB also scans the subdomains for the most common ports i've seen in the wild.
 
 HOW TO USE:
+
 pip3 install requests
+
 pip3 install termcolor
+
 pip3 install ftplib
+
 python3 ssb.py
 
 Techincal details:
