@@ -20,6 +20,8 @@ sudo apt-get install libmariadb3 libmariadb-dev
 
 pip3 install mariadb
 
+pip3 install smbprotocol
+
 python3 ssb.py
 
 
