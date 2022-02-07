@@ -40,20 +40,19 @@ python3 ssb.py
 
 # TECHNICAL DETAILS:
 
-+Uses DNS resolving instead of scanning a specific port.
++Uses DNS resolving instead of a port specific or ping scan.
 
 
 -DNS is slower than using the port scanning method.
 
 
-+Validates HTTP and HTTPS ports by actually making a request instead of relying off the fact that is open (many http ports that i've seen in the wild are timeouts)
++Validates HTTP and HTTPS ports by actually making a request instead of relying off the fact that it is open (many http/https ports that i've seen in the wild are timeouts)
 
 
--+easy to use so it's fast for pen testers but also script kiddies can operate this which is bad...
+-+Easy to use so that it is fast for pen-testers but also script kiddies can operate this which is bad (Unlike nmap which needs flags to be set right)...
 
-
-+No need to make a list and after that nmap them aka it covers a lot more of attack surface with in a short time.
++Automatically scans subdomains without having the need for the hassle of scanning subdomains, making a list, nmap scanning them.
 
 +Does ftp/smb anonyous account checks.
 
-+Reasonable timeouts so you won't have to think about "Is it even doing anything" because it proceeds to another scan if another one times out.
++Reasonable timeouts so you won't have to worry about "Is it even doing anything?/Did it feeze?" because it proceeds to another scan automatically if another one times out.
