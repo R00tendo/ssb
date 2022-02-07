@@ -33,7 +33,7 @@ python3 ssb.py
 
 
 
-Techincal details:
+TECHNICAL DETAILS:
 
 +Uses DNS resolving instead of scanning a specific port.
 
