@@ -4,14 +4,18 @@
 
 # Description
 SSB=simple subdomain bruteforcer
+
 SSB is a tool that bruteforces subdomains based on dns records.
+
 SSB also scans the subdomains for the most common ports i've seen in the wild.
 
 
 # Update log (only major updates)
-Update: markv3: SSH Bruteforce added and ftp threads increased, problems with report generating solved
+Update: Mark_v0: Scans for ports in the found subdomains.
 
-Update: markv5: Mysql, Smb, Telnet bruteforce added, rpcbind program lister added, errors now shown in cyan instead of red
+Update: Mark_v3: SSH Bruteforce added and ftp threads increased, problems with report generating solved.
+
+Update: Mark_v5: Mysql, Smb, Telnet bruteforce added, rpcbind program lister added, errors now shown in cyan instead of red and SSB can now automatically use sublist3r to scan for subdomains.
 
 # HOW TO SETUP:
 
