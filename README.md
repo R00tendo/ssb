@@ -10,7 +10,7 @@ Update: markv3: SSH Bruteforce added and ftp threads increased, problems with re
 
 Update: markv5: Mysql, Smb, Telnet bruteforce added, rpcbind program lister added, errors now shown in cyan instead of red
 
-HOW TO USE:
+# HOW TO USE:
 
 pip3 install requests
 
@@ -33,7 +33,7 @@ python3 ssb.py
 
 
 
-TECHNICAL DETAILS:
+# TECHNICAL DETAILS:
 
 +Uses DNS resolving instead of scanning a specific port.
 
