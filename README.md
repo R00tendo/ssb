@@ -1,16 +1,19 @@
 # ssb
 ![image](https://user-images.githubusercontent.com/72181445/152828512-214ecf43-37eb-4013-87d3-2eff6fffc354.png)
+# Current version: Markv5
 
-
+# Description
 SSB=simple subdomain bruteforcer
 SSB is a tool that bruteforces subdomains based on dns records.
 SSB also scans the subdomains for the most common ports i've seen in the wild.
 
+
+# Update log (only major updates)
 Update: markv3: SSH Bruteforce added and ftp threads increased, problems with report generating solved
 
 Update: markv5: Mysql, Smb, Telnet bruteforce added, rpcbind program lister added, errors now shown in cyan instead of red
 
-# HOW TO USE:
+# HOW TO SETUP:
 
 pip3 install requests
 
@@ -27,6 +30,8 @@ pip3 install mariadb
 pip3 install smbprotocol
 
 pip3 install telnetlib
+
+And you're done, now just launch the app using PYTHON3
 
 python3 ssb.py
 
