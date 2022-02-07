@@ -47,4 +47,8 @@ python3 ssb.py
 -+easy to use so it's fast for pen testers but also script kiddies can operate this which is bad...
 
 
-+No need to make a list and after that nmap them aka it covers a lot more of attack surface with in a short time
++No need to make a list and after that nmap them aka it covers a lot more of attack surface with in a short time.
+
++Does ftp/smb anonyous account checks.
+
++Reasonable timeouts so you won't have to think about "Is it even doing anything" because it proceeds to another scan if another one times out.
