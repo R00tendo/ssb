@@ -9,8 +9,6 @@ import termcolor
 import time
 import sys
 import socket
-
-
 #cool logo 
 banner = termcolor.colored("""
                                                                                                     
@@ -49,7 +47,7 @@ except:
   sys.exit(1)
 
 
-print("Host is up!\n")
+print("Host is up or ip supplied!\n")
 
 word_or_sub = input("(1.)Sublist3r (2.)Wordlist (3.)Only this domain:")
 

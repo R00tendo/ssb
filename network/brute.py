@@ -123,4 +123,4 @@ def dns(subs, host, threads_allowed):
              print(termcolor.colored(f"RESULTS:{' ' * 10}", "magenta"))
              print(resp)
         print(f"{'-'*36}|{'-'*5}|{'-'*5}|{'-'*4}|{'-'*6}|{'-'*4}|{'-'*5}|{'-'*7}|{'-'*5}|{'-'*4}|{'-'*4}")
-   print("\n\nHost                                |HTTP |HTTPS|SSH |TELNET|FTP |SMTP |RPCBIND|MYSQL|SMB |RDP")     
+   print("Host                                |HTTP |HTTPS|SSH |TELNET|FTP |SMTP |RPCBIND|MYSQL|SMB |RDP")     

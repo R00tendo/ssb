@@ -2,6 +2,10 @@ from termcolor import colored
 from screens import count_screen
 from ftplib import FTP
 import threading
+import smbclient
+import mariadb
+import warnings
+import telnetlib
 import os
 import paramiko
 import time
@@ -38,7 +42,7 @@ def ftp_check(host):
          ftp = FTP(host)
          ftp.login()
          ftp.quit()
-         feed_back = feed_back + colored(" [FTP_VULNERABILITY] FTP ANONYMOUS LOGIN IS ENABLED!\n", "red")
+         feed_back = feed_back + colored(" [FTP_SEVERE_MISCONFIGURATION] FTP ANONYMOUS LOGIN IS ENABLED!\n", "red")
        except:
          pass
 
@@ -120,7 +124,7 @@ def http_wrong_calc(url):
               bad_len = len(a.text)
               which_one = 2
        else:
-           print(colored("[ERROR] Can't find anything that differes in good and bad requests...", "red"))
+           print(colored("[HTTP_ERROR] Can't find anything that differes in good and bad requests...", "cyan"))
    
 
     #Returns the results to http_check
@@ -129,7 +133,7 @@ def http_wrong_calc(url):
     elif which_one == 2:
        return which_one, bad_len
     else:
-        print(colored(f"[ERROR] not a bad or good len {which_one}", "red"))
+        print(colored(f"[HTTP_ERROR] not a bad or good len {which_one}", "cyan"))
 
 
 def http_brute_thread(lis, bad, bad_what, url):
@@ -161,13 +165,13 @@ def http_brute_thread(lis, bad, bad_what, url):
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'
        }
        try:
-        requ = requests.get(url + "/" + line, headers=head)
+        requ = requests.get(url + "/" + line, headers=head, timeout=4)
        except:
-         #If timeout 20 times, set running threads manually to 0 and increase bt to trillion in order to stop the count screen and then exit
+         #If timeout 20 times, set running threads manually to 0 and increase bt to (insert high number here :D) in order to stop the count screen and then exit
          allo += 1
          time.sleep(3)
          if allo > 20:
-             bt = 1000*1000*1000
+             bt = 1000*1000*1000*1000*1000*1000
              trets = 0 
              exit()
         #this one below this comment was a prototype but the problem is that it 1. went to -   2. because there are a lot of threads it would remove all of them instant if even a second delay
@@ -231,11 +235,18 @@ def http_brute(url, wordlist, bad, bad_what):
            cache = []
  
      #Generates a report
-     if len(http_found) < len(lines):
+     amount = 0
+     if len(lines) > 2000:
+        amount = len(lines)/2
+     else:
+       amount = len(lines)
+     if len(http_found) <= amount:
 
       http_fdback = ""
       for found in http_found:
             http_fdback = http_fdback + colored(f" [{url.split(':')[0].upper().strip()}_CONTENT] {found.strip()}\n", "yellow")
+     else:
+        http_fdback = ""
      return http_fdback
 
 #The first step, aka determining what to run and loads wordlists
@@ -246,13 +257,13 @@ def http_check(host, p_s):
    elif p_s == "https":
       prefix = "https://"
    else:
-     print(colored(f"[ERROR] {p_s} is not http nor is it https", "red"))
+     print(colored(f"[HTTP_ERROR] {p_s} is not http nor is it https", "cyan"))
    host = host.strip()
    url = prefix + host
    try:
     whi, bad = http_wrong_calc(url)
    except:
-    return colored(" [Error] in running file discovery, server not responding...", "red")
+    return colored(" [HTTP_ERROR] in running file discovery, server not responding...", "cyan")
    wordlist = "wordlists/http-disco.txt"
 
    http_feed_back = http_brute(url, wordlist, bad, whi)
@@ -261,13 +272,15 @@ def http_check(host, p_s):
 
 #HTTP/HTTPS File discovery stops here
 
+
+
+#SSH SECTION STARTS
 #ssh thread that tries a list of passwords and usernames
 def ssh_brute_thread(host, cache):
     global got, trets, ssh_bt
     for combo in cache:
           ssh_bt += 1
           count_screen.set_value(ssh_bt)
-          
           #Beutifies the user:pass format to variables
           combo = combo.strip()
           combo = combo.split(":")
@@ -283,6 +296,7 @@ def ssh_brute_thread(host, cache):
           sh.close()
     trets -= 1
  
+
 #SSH Bruteforce 
 def ssh_brute(host):
     global trets, got, ssh_bt
@@ -292,22 +306,22 @@ def ssh_brute(host):
     wordlist = "wordlists/ssh_combo.txt"
     wordlist = open(wordlist, "r").readlines()
     cache = []
-    allowed = 5
+    allowed = 6
     trets = 0
     ssh_bt = 0
-    buff = 5
+    buff = 10
 
     count_screen.loader(ssh_bt, len(wordlist))
     #Starts threads 
     for line in wordlist:
         line = line.strip()
-        cache.append(line)
-        if allowed > trets and len(cache) >= buff:
+        cache.append(line) 
+        if allowed >= trets and len(cache) >= buff:
                threading.Thread(target=ssh_brute_thread, args=(host, cache)).start()
                trets += 1
                cache = []
         else:
-          while trets > allowed:
+          while trets >= allowed:
                 time.sleep(0.4)
     #thread runs when there are 5 items in cache so if there are for example 22, it will finish off those last 2
     while trets != 0 or len(cache) != 0:
@@ -315,7 +329,7 @@ def ssh_brute(host):
             threading.Thread(target=ssh_brute_thread, args=(host, cache)).start()
             trets += 1
             cache = []
-         time.sleep(0.4)
+        
     print(colored("[INFO] SSH Bruteforce done!", "green"))
 
     #Report generating
@@ -327,11 +341,279 @@ def ssh_brute(host):
           ssh_feed_back = ssh_feed_back + colored(f" [SSH_CREDENTIALS] SSH credentials cracked: Username:{username} Password:{password}\n", "red")
     return ssh_feed_back
   
+#SSH SECTION STOPS
+
+#RPCINFO STARTS
+
+#A quick and dirty rpc program info getter, couldn't find any python library for this old service so ill just os lib and trust that the os is not malformed
+
+def rpcinfo_get(host):
+   global rpc_info
+   info = os.popen(f"rpcinfo \"{host}\"").read()
+   info = colored(f" [RPCINFO]\n{info} [RPCINFO]\n", "yellow")
+   rpc_info = info
+   return rpc_info
+#RPCINFO STOPS
+
+#MYSQL SECTION STARTS
+
+#Mysql brute  functions thread that does the actual request
+def mysql_brute_thread(host, lis):
+   global trets, got, bt
+   for line in lis:
+      bt += 1
+      count_screen.set_value(bt)
+      line = line.split(":")
+      username = line[0]
+      password = line[1]
+      try:
+       #Mariadb also works for mysql
+       conn = mariadb.connect(user=username,password=password,host=host,port=3306,database="mysql")
+       conn.close()
+       got.append(f"{username}:{password}")
+      except:
+        pass
+   trets -= 1
+
+
+#Mysql brute thread starter, wordlist reader
+def mysql_brute(host):
+   global trets, got, bt
+   print(colored("[INFO] MYSQL Bruteforce Starts", "green"))
+   wordlist = open("wordlists/mysql_combo.txt").readlines()
+   cache = []
+   got = []
+   trets = 0
+   allowed = 5
+   buff = 5
+   bt = 0
+   count_screen.loader(bt, len(wordlist))
+   for line in wordlist:
+         line = line.strip()
+         cache.append(line)
+         if trets < allowed and len(cache) >= buff:
+               threading.Thread(target=mysql_brute_thread, args=(host,cache,)).start()
+               trets += 1
+               cache = []
+         else:
+            while trets > allowed:
+                      time.sleep(0.4)
+   while trets != 0 or len(cache) != 0:
+     if len(cache) != 0:
+         threading.Thread(target=mysql_brute_thread, args=(host,cache,)).start()
+         trets += 1
+         cache = []
+     time.sleep(0.4)
+   report = ""
+   for rep in got:
+        usa = rep.split(":")[0]
+        pasa = rep.split(":")[1]
+        report = report + colored(f" [MYSQL_CREDENTIALS] MYSQL Credentials Cracked: Username:{usa} Password:{pasa}\n", "red")
+
+   print(colored("[INFO] MYSQL Bruteforce Stops", "green"))
+   return report
+
+
+#MYSQL SECTION STOPS
+
+
+#SMB SECTION STARTS
+
+def smb_brute_thread(host, lis):
+   global trets, got, bt
+   for line in lis:
+       bt += 1
+       count_screen.set_value(bt)
+       line = line.strip()
+       user = line.split(":")[0]
+       passwd = line.split(":")[1]
+       try:
+         smbclient.register_session(host, username=user, password=passwd, connection_timeout=10)
+         got.append(f"{user}:{passwd}")
+         
+       except:
+         pass
+       
+   trets -= 1
+
+
+def smb_anon_scan(host):
+     anon = False
+     try:  
+         smbclient.register_session(host, username="Anonymous", password="Anonymous", connection_timeout=20)
+         smbclient.reset_connection_cache()
+         print("Anon")
+     except Exception as errno:
+         if str(errno) == "SMB encryption or signing was required but session was authenticated as a guest which does not support encryption or signing":
+           anon = True
+     return anon
+def smb_brute(host):
+    global trets, got, bt
+   
+    #Scans for anonymous login
+    smb_anon = smb_anon_scan(host)
+
+    #SMB BRUTEFORCE
+    print(colored("[INFO] SMB Bruteforcing", "green"))
+    trets = 0
+    bt = 0
+    got = []
+    cache = []
+    allowed = 10
+    buff = 10
+    #Anonymous login makes it hard to detect right and wrong creds
+    if not smb_anon:
+
+     wordlist = open("wordlists/smb_combo.txt").readlines()
+     count_screen.loader(bt, len(wordlist))
+     
+     #Reads wordlist, starts threads
+     for line in wordlist:
+       line = line.strip()
+       cache.append(line)
+       if len(cache) >= buff and trets <= allowed:
+             threading.Thread(target=smb_brute_thread, args=(host, cache)).start()
+             trets += 1
+             cache = []
+       else:
+         while trets >= allowed:
+             time.sleep(0.4)
+     while trets != 0 or len(cache) != 0:
+          if len(cache) != 0:
+              threading.Thread(target=smb_brute_thread, args=(host, cache)).start()
+              trets += 1
+              cache = []
+
+
+    #Report generating    
+    report = ""
+    if smb_anon:
+        report = report + colored(" [SMB_SEVERE_MISCONFIGURATION] SMB ANONYMOUS ACCOUNT IS ENABLED!\n", "red")
+ 
+    if not smb_anon:
+     for cred in got:
+         username = cred.split(":")[0]
+         password = cred.split(":")[1]
+         report = report + colored(f" [SMB_CREDENTIALS] SMB Credentials Cracked: Username: {username} Password: {password}\n", "red")
+    print(colored("[INFO] SMB Bruteforce Stopped", "green"))
+    return report
+#SMB SECTION STOPS
+
+
+#TELNET SECTION STARTS
+
+def telnet_respond(conn):
+         respa = "" 
+         while len(respa) < 1:
+            respa = conn.read_eager()
+            respa = respa.decode("latin-1").strip()
+         return respa
+
+def telnet_send(msg, conn):
+          msg = bytes(msg + "\n", "latin-1")
+          conn.write(msg)
+def wait_for(msg, conn):
+          respa = "" 
+          while msg not in respa.lower():
+           respa = telnet_respond(conn)  
+
+
+
+def telnet_brute_thread(lis, host):
+   global trets, got, bt, fails, fails_max
+   try:
+    for creds in lis:
+      bt += 1
+      count_screen.set_value(bt)
+      creds = creds.split(":")
+      username = creds[0]
+      password = creds[1]
+      conn = telnetlib.Telnet(host, 23)
+      wait_for("login:", conn)
+      telnet_send(username, conn)
+      wait_for("password:", conn)
+      telnet_send(password, conn)
+      status = telnet_respond(conn)
+      got1 = False
+      conn.close()
+      if "incorrect" in status:
+          pass
+      else:
+          got1 = True
+      if got1:
+        got.append(f"{username}:{password}")
+   except Exception as e:
+      fails += 1
+      if fails > fails_max:
+         bt = 1000*1000*1000*1000*1000*1000
+         count_screen.set_value(bt)
+         print(" " * 100, end="\r")
+         trets = 0
+         exit()
+   trets -= 1
+
+#Telnet brute thread starter, wordlist reader
+def telnet_brute(host):
+     global trets, got, bt, fails, fails_max
+    
+     wordlist = open("wordlists/telnet_combo.txt").readlines()
+     cache = []
+     fails = 0
+     fails_max = len(wordlist)/2
+     got = []
+     trets = 0
+     allowed = 10
+     buff = 10
+     bt = 0
+     count_screen.loader(bt, len(wordlist))
+     for line in wordlist:
+      line = line.strip()
+      cache.append(line)
+      if len(cache) >= buff and trets <= allowed:
+           threading.Thread(target=telnet_brute_thread, args=(cache, host,)).start()
+           trets += 1
+           cache = []  
+      else:
+        while trets >= allowed:
+           time.sleep(0.4)
+
+     while trets > 0 or len(cache) != 0:
+       if len(cache) != 0:
+           threading.Thread(target=telnet_brute_thread, args=(cache, host,)).start()
+           cache = []
+           trets += 1
+     report = ""
+     for creds in got:
+        creds = creds.split(":")
+        username = creds[0]
+        password = creds[1]
+        report = report + colored(f" [TELNET_CREDENTIALS] Telnet Credentials Cracked: Username:{username} Password:{password}\n", "red")
+     return report
+#TELNET SECTION ENDS
 
 #Central hub to decide what scans to run
 def checks(host, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp):
+     warnings.filterwarnings(action='ignore')
      only_https = False
      feed_back = ""
+
+     #Telnet brute...
+     if telnet != "Fals":
+         feed_back = feed_back + telnet_brute(host)
+
+     #SMB Brute and anon detection
+     if smb != "Fals":
+          feed_back = feed_back + smb_brute(host)
+
+     #MYSQL Bruteforce 
+     if mysql != "Fals":
+          feed_back = feed_back + mysql_brute(host)
+    
+     #Gets rpc programs running
+     if rpcbind != "Fals":
+           feed_back = feed_back + rpcinfo_get(host)
+
+
      #SSH Brute if ssh enabled
      if ssh != "Fals":
         ssh_response = ssh_brute(host)
@@ -398,7 +680,7 @@ def checks(host, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp):
                feed_back = feed_back + http_s_results
                
            else:
-              print(colored("[ERROR] neither http or https", "red"))
+              print(colored("[HTTP_ERROR] neither http or https", "cyan"))
               sys.exit(1)
 
            
