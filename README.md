@@ -22,6 +22,8 @@ pip3 install mariadb
 
 pip3 install smbprotocol
 
+pip3 install telnetlib
+
 python3 ssb.py
 
 
