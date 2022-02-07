@@ -5,10 +5,9 @@
 # Description
 SSB=simple subdomain bruteforcer
 
-SSB is a tool that bruteforces subdomains based on dns records.
+SSB Tries to find subdomains for a domain and scan them for ports/services. When SSB has identified all of the services the subdomain is running, it will then scan the services for common misconfigurations and credentials.
 
-SSB also scans the subdomains for the most common ports i've seen in the wild.
-
+SSB  scans the subdomains for the most common ports and services i've seen in the wild.
 
 # Update log (only major updates)
 Update: Mark_v0: Scans for ports in the found subdomains.
