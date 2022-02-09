@@ -1,5 +1,5 @@
 # ssb
-![image](https://user-images.githubusercontent.com/72181445/152828512-214ecf43-37eb-4013-87d3-2eff6fffc354.png)
+![image](https://user-images.githubusercontent.com/72181445/153228795-7346bd04-69eb-4205-9d27-c104ad7295ea.png)
 # Current version: Markv5
 
 # Description
