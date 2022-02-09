@@ -16,6 +16,9 @@ Update: Mark_v3: SSH Bruteforce added and ftp threads increased, problems with r
 
 Update: Mark_v5: Mysql, Smb, Telnet bruteforce added, rpcbind program lister added, errors now shown in cyan instead of red and SSB can now automatically use sublist3r to scan for subdomains.
 
+# BACKGROUND:
+I started this project on 2.2.2022
+
 # HOW TO SETUP:
 
 pip3 install requests
