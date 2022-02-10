@@ -1,6 +1,6 @@
 # SSB
 ![image](https://user-images.githubusercontent.com/72181445/153228795-7346bd04-69eb-4205-9d27-c104ad7295ea.png)
-# Current version: Markv5
+# Current version: Mark_v6
 
 # Description
 SSB=simple subdomain bruteforcer
@@ -42,7 +42,19 @@ And you're done, now just launch the app using PYTHON3
 python3 ssb.py
 
 
+# Features
 
+Mysql Bruteforce<img src="https://user-images.githubusercontent.com/72181445/153476377-b250f42b-b0c0-4153-bc58-e42a9146d960.png" width=200></img>
+
+SSH Bruteforce<img src="https://user-images.githubusercontent.com/72181445/153476527-f709874c-591e-43e7-8bef-bbb0c1d67dfd.png" width=300></img>
+
+FTP Anonymous Account Check<img src="https://user-images.githubusercontent.com/72181445/153476675-e33502cc-53d5-408e-ab80-162c0820343b.png" width=150></img>
+
+FTP Bruteforce
+
+Smb Anonymous Account Check 
+
+Smb Bruteforce
 
 # TECHNICAL DETAILS:
 
