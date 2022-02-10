@@ -98,7 +98,11 @@ def http_wrong_calc(url):
 
 
     #Gets an example of the front page (we assume that the main site isn't 404 or 403)
-    good = requests.get(url)
+    head = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'
+    }
+
+    good = requests.get(url, verify=False)
 
     #You can increase the samples if you suspect that the site isn't responding correctly all the time
     for i in range(1):
@@ -113,7 +117,7 @@ def http_wrong_calc(url):
         
 
       
-       a = requests.get(urla, headers=head)
+       a = requests.get(urla, headers=head, verify=False)
        #Compares status code and lenght.
        if a.status_code != good.status_code:
               print(colored("[INFO] Bad status code found:" + str(a.status_code), "green"))
@@ -124,7 +128,7 @@ def http_wrong_calc(url):
               bad_len = len(a.text)
               which_one = 2
        else:
-           print(colored("[HTTP_ERROR] Can't find anything that differes in good and bad requests...", "cyan"))
+           print(colored("[HTTP_ERROR] Can't find anything that differes a good and a bad requests apart...", "cyan"))
    
 
     #Returns the results to http_check
@@ -133,7 +137,7 @@ def http_wrong_calc(url):
     elif which_one == 2:
        return which_one, bad_len
     else:
-        print(colored(f"[HTTP_ERROR] not a bad or good len {which_one}", "cyan"))
+        print(colored(f"[HTTP_ERROR] Can't find differences in requesting a made up file or requesting the main page.", "cyan"))
 
 
 def http_brute_thread(lis, bad, bad_what, url):
@@ -165,7 +169,7 @@ def http_brute_thread(lis, bad, bad_what, url):
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'
        }
        try:
-        requ = requests.get(url + "/" + line, headers=head, timeout=4)
+        requ = requests.get(url + "/" + line, headers=head, timeout=4, verify=False)
        except:
          #If timeout 20 times, set running threads manually to 0 and increase bt to (insert high number here :D) in order to stop the count screen and then exit
          allo += 1
@@ -263,14 +267,45 @@ def http_check(host, p_s):
    try:
     whi, bad = http_wrong_calc(url)
    except:
-    return colored(" [HTTP_ERROR] in running file discovery, server not responding...", "cyan")
+    return colored(" [HTTP_ERROR] in running file discovery, server not responding or can't find a bad status code/response lenght", "cyan")
    wordlist = "wordlists/http-disco.txt"
 
    http_feed_back = http_brute(url, wordlist, bad, whi)
    print(colored("[INFO] Http-File Discovery Done!", "green"))
    return http_feed_back
 
-#HTTP/HTTPS File discovery stops here
+
+def http_methods(host, proto):
+   print(colored("[INFO] Getting Allowed Http Methods", "green"))
+   url = f"{proto.strip()}://{host}"
+
+   head = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0'
+   }
+
+   try:
+    req = requests.options(url, verify=False, timeout=20, headers=head).headers
+   except:
+    print(colored("[HTTP_METHODS_ERROR] Getting Allowed Http Methods Failed Because The Server Didn't Respond", "cyan"))
+    return ""
+   print(colored("[INFO] Getting Allowed Http Methods Done!", "green"))
+   report = ""
+   if "Allow" in req:
+      methods = req["Allow"]
+      methods = methods.split(",")
+      for method in methods:
+          method = method.strip().lower()
+          if method == "put":
+               report = report + colored(" [HTTP_METHODS] The method PUT is listed as an option, this may not be actually allowed but it is listed as an option.\n", "red")
+          elif method == "delete":
+               report = report + colored(" [HTTP_METHODS] The method DELETE is listed as an option, this may not be actually allowed but it is listed as an option.\n", "red")
+          elif method == "trace":
+               report = report + colored(" [HTTP_METHODS] The method TRACE is listed as an option, this may not be actually allowed but it is listed as an option.\n", "yellow")
+      return report
+   else:
+     return ""
+
+#HTTP/HTTPS File discovery and methods check stops here
 
 
 
@@ -282,18 +317,22 @@ def ssh_brute_thread(host, cache):
           ssh_bt += 1
           count_screen.set_value(ssh_bt)
           #Beutifies the user:pass format to variables
-          combo = combo.strip()
-          combo = combo.split(":")
-          username = combo[0]
-          password = combo[1]
-          sh = paramiko.SSHClient()
-          sh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
           try:
-           sh.connect(host, 22, username, password, timeout=10)
+           combo = combo.strip()
+           combo = combo.split(":")
+           username = combo[0]
+           password = combo[1]
+           sh = paramiko.SSHClient()
+           sh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+          
+           sh.connect(host, 22, username, password, timeout=5)
            got.append(f"{username}:{password}")
           except:
              pass
-          sh.close()
+          try:
+           sh.close()
+          except:
+           pass
     trets -= 1
  
 
@@ -306,7 +345,7 @@ def ssh_brute(host):
     wordlist = "wordlists/ssh_combo.txt"
     wordlist = open(wordlist, "r").readlines()
     cache = []
-    allowed = 6
+    allowed = 10
     trets = 0
     ssh_bt = 0
     buff = 10
@@ -349,9 +388,11 @@ def ssh_brute(host):
 
 def rpcinfo_get(host):
    global rpc_info
+   print(colored("[INFO] Getting Rpcbind Info, Please Be Patient...", "green"))
    info = os.popen(f"rpcinfo \"{host}\"").read()
    info = colored(f" [RPCINFO]\n{info} [RPCINFO]\n", "yellow")
    rpc_info = info
+   print(colored("[INFO] Rpcbind Info Getting Done!", "green"))
    return rpc_info
 #RPCINFO STOPS
 
@@ -651,6 +692,7 @@ def checks(host, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp):
                print(colored("[INFO] Http to https redirect found, ignoring http port and continuing to scan https...", "green"))
                http_s_results = http_check(host, "https")
                feed_back = feed_back + http_s_results
+               feed_back = feed_back + http_methods(host, "https")
 
 
 
@@ -664,6 +706,7 @@ def checks(host, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp):
              print(colored(f"[INFO] Scanning {proto}", "green"))
              http_s_results = http_check(host, proto)
              feed_back = feed_back + http_s_results
+             feed_back = feed_back + http_methods(host, proto)
              
 
         #Only one running (http/https)
@@ -673,12 +716,12 @@ def checks(host, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp):
                p_s = "http"
                http_s_results = http_check(host, p_s)
                feed_back = feed_back + http_s_results
-               
+               feed_back = feed_back + http_methods(host, p_s)
            elif https != "Fals":
                p_s = "https"
                http_s_results = http_check(host, p_s)
                feed_back = feed_back + http_s_results
-               
+               feed_back = feed_back + http_methods(host, p_s)
            else:
               print(colored("[HTTP_ERROR] neither http or https", "cyan"))
               sys.exit(1)

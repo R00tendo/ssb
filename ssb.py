@@ -9,7 +9,23 @@ import termcolor
 import time
 import sys
 import socket
-#cool logo 
+import paramiko
+
+
+
+#It overwrites the paramiko transport.py file with the same one but with the errors removed so that the script works better
+dest = paramiko.__file__.replace("__init__.py", "") + "transport.py"
+src = "modules/paramiko/transport.py"
+if os.path.exists(src):
+ if os.path.exists(dest):
+   if open(src).read() != open(dest).read():
+          print(f"{dest} Was overwritten with a custom one that doesn't spam your screen with errors!")
+          src_read = open(src, 'rb').read()
+          dest_write = open(dest, 'wb').write(src_read)
+#          os.system("cp  modules/paramiko/transport.py " + dest)
+
+
+#Cool logo
 banner = termcolor.colored("""
                                                                                                     
                                                          ^???7.                                     
@@ -38,8 +54,9 @@ banner = termcolor.colored("""
 print(banner)
 
 
+
 #Host dead?
-host = input("Domain:")
+host = input("Domain:").strip()
 try:
   socket.gethostbyname(host)
 except:
