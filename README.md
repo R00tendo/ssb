@@ -43,25 +43,45 @@ python3 ssb.py
 
 
 # Features
+<img src="https://user-images.githubusercontent.com/72181445/153476377-b250f42b-b0c0-4153-bc58-e42a9146d960.png" width=200></img>
 
-Mysql Bruteforce<img src="https://user-images.githubusercontent.com/72181445/153476377-b250f42b-b0c0-4153-bc58-e42a9146d960.png" width=200></img>
+Mysql Bruteforce
 
-SSH Bruteforce<img src="https://user-images.githubusercontent.com/72181445/153476527-f709874c-591e-43e7-8bef-bbb0c1d67dfd.png" width=300></img>
 
-FTP Anonymous Account Check<img src="https://user-images.githubusercontent.com/72181445/153476675-e33502cc-53d5-408e-ab80-162c0820343b.png" width=150></img>
+<img src="https://user-images.githubusercontent.com/72181445/153476527-f709874c-591e-43e7-8bef-bbb0c1d67dfd.png" width=300></img>
+
+SSH Bruteforce
+
+
+<img src="https://user-images.githubusercontent.com/72181445/153476675-e33502cc-53d5-408e-ab80-162c0820343b.png" width=150></img>
+
+FTP Anonymous Account Check
 
 FTP Bruteforce
 
-Smb Anonymous Account Check <img src="https://user-images.githubusercontent.com/72181445/153477452-11306f05-babc-4184-bf40-6ad7050c4f5a.png" width=120></img>
+
+<img src="https://user-images.githubusercontent.com/72181445/153477452-11306f05-babc-4184-bf40-6ad7050c4f5a.png" width=120></img>
+
+Smb Anonymous Account Check 
 
 Smb Bruteforce
 
 
-Http/Https File Discovery <img src="https://user-images.githubusercontent.com/72181445/153479035-54e630a9-ea77-4a07-b87d-e2af3c9a5e20.png" width=140></img>
+<img src="https://user-images.githubusercontent.com/72181445/153479035-54e630a9-ea77-4a07-b87d-e2af3c9a5e20.png" width=140></img>
+
+Http/Https File Discovery
 
 Http/Https Method Scan
 
-Telnet Bruteforce<img src="https://user-images.githubusercontent.com/72181445/153479607-5ba66053-b54b-408c-9ac1-ca7e373cb083.png" width=200></img>
+
+<img src="https://user-images.githubusercontent.com/72181445/153479607-5ba66053-b54b-408c-9ac1-ca7e373cb083.png" width=200></img>
+
+Telnet Bruteforce
+
+
+<img src="https://user-images.githubusercontent.com/72181445/153480235-d4598870-1175-4b6b-b739-676b9f12f34a.png" width=200></img>
+
+Rpcbind Process Lister
 
 
 # TECHNICAL DETAILS:
