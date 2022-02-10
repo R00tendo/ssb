@@ -52,9 +52,14 @@ FTP Anonymous Account Check<img src="https://user-images.githubusercontent.com/7
 
 FTP Bruteforce
 
-Smb Anonymous Account Check 
+Smb Anonymous Account Check <img src="https://user-images.githubusercontent.com/72181445/153477452-11306f05-babc-4184-bf40-6ad7050c4f5a.png" width=120></img>
 
 Smb Bruteforce
+
+
+Http/Https File Discovery 
+
+Http/Https Method Scan
 
 # TECHNICAL DETAILS:
 
