@@ -57,9 +57,12 @@ Smb Anonymous Account Check <img src="https://user-images.githubusercontent.com/
 Smb Bruteforce
 
 
-Http/Https File Discovery 
+Http/Https File Discovery <img src="https://user-images.githubusercontent.com/72181445/153479035-54e630a9-ea77-4a07-b87d-e2af3c9a5e20.png" width=140></img>
 
 Http/Https Method Scan
+
+Telnet Bruteforce<img src="https://user-images.githubusercontent.com/72181445/153479607-5ba66053-b54b-408c-9ac1-ca7e373cb083.png" width=200></img>
+
 
 # TECHNICAL DETAILS:
 
