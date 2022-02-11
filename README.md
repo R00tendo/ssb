@@ -2,6 +2,8 @@
 ![image](https://user-images.githubusercontent.com/72181445/153228795-7346bd04-69eb-4205-9d27-c104ad7295ea.png)
 # Current version: Mark_v6
 
+# Put on the dark mode so the logos look alot cooler :)
+
 # Description
 SSB=simple subdomain bruteforcer
 
