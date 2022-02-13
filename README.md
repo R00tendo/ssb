@@ -18,6 +18,8 @@ Update: Mark_v3: SSH Bruteforce added and ftp threads increased, problems with r
 
 Update: Mark_v5: Mysql, Smb, Telnet bruteforce added, rpcbind program lister added, errors now shown in cyan instead of red and SSB can now automatically use sublist3r to scan for subdomains.
 
+Update: Mark_v6: Added HTTP Method detection and PARAMIKO transport.py will get overwritten to prevent error pop ups that would flood the screen if not mitigated (And yes, from my research, updating the actual library is the only way to control the exceptions that are made INSIDE the module)
+
 # BACKGROUND:
 I started this project on 2.2.2022
 
