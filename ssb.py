@@ -1,8 +1,11 @@
+#!/usr/bin/python3
 from screens import  load_screen
 from screens import  count_screen
 from network import  host_up
 from files   import  reader
 from network import  brute #<-- does the actual brute forcing
+from others import help 
+from others import param
 import threading
 import os
 import termcolor
@@ -45,18 +48,44 @@ banner = termcolor.colored("""
                :~!!!!!!!!!^.    ~!!!!!!!!!~^   ^!!!!!!!!!~~:.                                       
                            @R00tendo at github                                                      
                                                                                                     
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
+                                                                                           
 """, 'green')
-print(banner)
+
+print(banner.strip())
+if "bool" not in str(type(help.check(sys.argv))):
+   help.page()
+   sys.exit(0)
+
+#Parameter section
+parameters = param.get_params(sys.argv)
+
+
+
+if parameters.help:
+  help.page
+
+try:
+  dns_threads = parameters.dns_threads
+except: 
+  print("Invalid dns_threads! Please look at the help page (--help) to see how to use this tool.")
+  sys.exit(1)
+
+
+try:
+  int(parameters.method)
+except: 
+  print("Invalid Subdomain finding method! Please look at the help page (--help) to see how to use this tool.")
+  sys.exit(1)
+
+scan_type = parameters.scan_type.lower()
+if scan_type != "validate" and scan_type != "scan":
+   print("Invalid scan_type! Please look at the help page (--help) to see how to use this tool.")
+   sys.exit(1)
 
 
 
 #Host dead?
-host = input("Domain:").strip()
+host = parameters.hostname
 try:
   socket.gethostbyname(host)
 except:
@@ -66,7 +95,8 @@ except:
 
 print("Host is up or ip supplied!\n")
 
-word_or_sub = input("(1.)Sublist3r (2.)Wordlist (3.)Only this domain:")
+
+word_or_sub = parameters.method
 
 #Sublist3r method
 if word_or_sub == "1":
@@ -120,7 +150,7 @@ if word_or_sub != "3":
     sys.exit(1)
 
 if word_or_sub != "3":
- allowed = input("\nHow many threads do you want running at the same time?:")
+ allowed = str(dns_threads)
 
 else:
   allowed = "1"
@@ -167,5 +197,5 @@ if word_or_sub == "1":
 
 #Our journey begins!
 print("\nStarting DNS Bruteforce...")
-brute.dns(subs, host, allowed)
+brute.dns(subs, host, allowed, scan_type)
 

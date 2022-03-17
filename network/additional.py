@@ -189,7 +189,10 @@ def http_brute_thread(lis, bad, bad_what, url):
        if requ != False:
         if bad_what == 1:
           if requ.status_code != int(bad_status):
-                http_found.append(f"{line} Code:{requ.status_code}")
+             if "40" not in str(requ.status_code): 
+               http_found.append(colored(f"{line} Code:{requ.status_code}", "green"))
+             else:
+               http_found.append(colored(f"{line} Code:{requ.status_code}", "magenta"))
         if bad_what == 2:
           if len(requ) != int(bad_len):
                 http_found.append(f"{line} Len:{len(requ.text)}")
@@ -267,7 +270,7 @@ def http_check(host, p_s):
    try:
     whi, bad = http_wrong_calc(url)
    except:
-    return colored(" [HTTP_ERROR] in running file discovery, server not responding or can't find a bad status code/response lenght", "cyan")
+    return colored(" [HTTP_ERROR] in running file discovery, server not responding or can't find a bad status code/response lenght\n", "cyan")
    wordlist = "wordlists/http-disco.txt"
 
    http_feed_back = http_brute(url, wordlist, bad, whi)

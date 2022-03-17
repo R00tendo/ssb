@@ -1,0 +1,16 @@
+{
+ "params": {
+  "--help": "not_necessary",
+  "-h": "necessary",
+  "--scan-type": "necessary",
+  "-s": "necessary",
+  "--dns-threads": "necessary"
+ },
+ "description": {
+  "--help": "Displays the help page",
+  "-h": "Hostname to scan",
+  "--scan-type": "Scan types: Validate, scan",
+  "-s": "Subdomain find method: 1=Sublist3r 2=Wordlist 3=Only this domain",
+  "--dns-threads": "The amount of threads that will validate subdomains"
+ }
+}

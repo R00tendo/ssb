@@ -32,7 +32,7 @@ def subber(subs, host):
    trets -= 1
    sys.exit(0)
   
-def dns(subs, host, threads_allowed):
+def dns(subs, host, threads_allowed, scan_type):
    global got, co, trets
    got = []
    if subs != False:
@@ -70,10 +70,14 @@ def dns(subs, host, threads_allowed):
    else:
        got.append(host)
    print(f"Done! {len(got)} subdomains found! {' ' * 10}")
-   print("\n\nHost                                |HTTP |HTTPS|SSH |TELNET|FTP |SMTP |RPCBIND|MYSQL|SMB |RDP")
-   print("-"*95)
+   if scan_type == "validate":
+    for host in got:
+       print(host)
+   elif scan_type == "scan":
+    print("\n\nHost                                |HTTP |HTTPS|SSH |TELNET|FTP |SMTP |RPCBIND|MYSQL|SMB |RDP")
+    print("-"*95)
 
-   for subss in got:
+    for subss in got:
 
         subss = subss.strip()
         #Check if X service is running
@@ -123,4 +127,4 @@ def dns(subs, host, threads_allowed):
              print(termcolor.colored(f"RESULTS:{' ' * 10}", "magenta"))
              print(resp)
         print(f"{'-'*36}|{'-'*5}|{'-'*5}|{'-'*4}|{'-'*6}|{'-'*4}|{'-'*5}|{'-'*7}|{'-'*5}|{'-'*4}|{'-'*4}")
-   print("Host                                |HTTP |HTTPS|SSH |TELNET|FTP |SMTP |RPCBIND|MYSQL|SMB |RDP")     
+    print("Host                                |HTTP |HTTPS|SSH |TELNET|FTP |SMTP |RPCBIND|MYSQL|SMB |RDP")     
