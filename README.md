@@ -49,6 +49,17 @@ And you're done, now just launch the app using PYTHON3
 
 python3 ssb.py
 
+# Usage:
+
+--help   (not_necessary)    Displays the help page 
+
+-h   (necessary)    Hostname to scan 
+
+--scan-type   (necessary)    Scan types: Validate, scan 
+
+-s   (necessary)    Subdomain find method: 1=Sublist3r 2=Wordlist 3=Only this domain 
+
+--dns-threads   (necessary)    The amount of threads that will validate subdomains 
 
 # Features
 <img src="https://user-images.githubusercontent.com/72181445/153476377-b250f42b-b0c0-4153-bc58-e42a9146d960.png" width=200></img>
