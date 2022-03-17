@@ -1,6 +1,6 @@
 # SSB
 ![image](https://user-images.githubusercontent.com/72181445/153228795-7346bd04-69eb-4205-9d27-c104ad7295ea.png)
-# Current version: Mark_v6
+# Current version: Mark_V7
 
 # Put on the night apparence mode so the logos look alot cooler :)
 
@@ -20,7 +20,9 @@ Update: Mark_v5: Mysql, Smb, Telnet bruteforce added, rpcbind program lister add
 
 Update: Mark_v6: Added HTTP Method detection and PARAMIKO transport.py will get overwritten to prevent error pop ups that would flood the screen if not mitigated (And yes, from my research, updating the actual library is the only way to control the exceptions that are made INSIDE the module)
 
-# Under dev?: Currently no
+Update: Mark_v7: Complete redisign of the ui, switching to flag based ui, you can decide wether to only validate or validate AND scan the subdomains
+
+# Under dev?: Currently yes
 
 # BACKGROUND:
 I started this project on 2.2.2022
