@@ -1,6 +1,6 @@
 # SSB
 ![image](https://user-images.githubusercontent.com/72181445/153228795-7346bd04-69eb-4205-9d27-c104ad7295ea.png)
-# Current version: Mark_V7
+# Current version: Mark_V8
 
 # Put on the night apparence mode so the logos look alot cooler :)
 
@@ -22,6 +22,7 @@ Update: Mark_v6: Added HTTP Method detection and PARAMIKO transport.py will get 
 
 Update: Mark_v7: Complete redisign of the ui, switching to flag based ui, you can decide wether to only validate or validate AND scan the subdomains
 
+Update: Mark_v8: Added flags and hotfixes
 # Under dev?: Currently yes
 
 # BACKGROUND:
