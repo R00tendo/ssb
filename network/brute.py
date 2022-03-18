@@ -32,7 +32,7 @@ def subber(subs, host):
    trets -= 1
    sys.exit(0)
   
-def dns(subs, host, threads_allowed, scan_type):
+def dns(subs, host, threads_allowed, scan_type, web_threads):
    global got, co, trets
    got = []
    if subs != False:
@@ -120,7 +120,7 @@ def dns(subs, host, threads_allowed, scan_type):
 
 
         #This one line is responsible for all the additional scans aka ftp brute, file discovery, etc...
-        resp = additional.checks(subss, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp)
+        resp = additional.checks(subss, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp, web_threads)
 
         #If feed_back lenght is over 2 characters print it out. You might be wondering why 2? well the answer to that question is that \n is 2 characters
         if len(resp) > 2:

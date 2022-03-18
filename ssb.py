@@ -59,6 +59,9 @@ if "bool" not in str(type(help.check(sys.argv))):
 #Parameter section
 parameters = param.get_params(sys.argv)
 
+if parameters.error:
+   print(parameters.error)
+   sys.exit(1)
 
 
 if parameters.help:
@@ -76,6 +79,13 @@ try:
 except: 
   print("Invalid Subdomain finding method! Please look at the help page (--help) to see how to use this tool.")
   sys.exit(1)
+
+try:
+  int(parameters.web_threads)
+except: 
+  print("Invalid Web_Threads! Please look at the help page (--help) to see how to use this tool.")
+  sys.exit(1)
+web_threads=parameters.web_threads
 
 scan_type = parameters.scan_type.lower()
 if scan_type != "validate" and scan_type != "scan":
@@ -95,7 +105,7 @@ except:
 
 print("Host is up or ip supplied!\n")
 
-
+wordlist = parameters.wordlist
 word_or_sub = parameters.method
 
 #Sublist3r method
@@ -139,14 +149,14 @@ else:
 
 #Determines what to ask
 if word_or_sub == "2":
- wordlist = input("Wordlist:").strip()
+ pass
 
 elif word_or_sub == "1":
   wordlist = f"subs-{host}-ssb"
 
 if word_or_sub != "3":
  if not os.path.exists(wordlist):
-    print(f"Cant find {wordlist}")
+    print(f"Cant find {wordlist} or wordlist not specified, if so please do so by using -w")
     sys.exit(1)
 
 if word_or_sub != "3":
@@ -197,5 +207,5 @@ if word_or_sub == "1":
 
 #Our journey begins!
 print("\nStarting DNS Bruteforce...")
-brute.dns(subs, host, allowed, scan_type)
+brute.dns(subs, host, allowed, scan_type, web_threads)
 

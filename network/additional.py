@@ -202,8 +202,8 @@ def http_brute_thread(lis, bad, bad_what, url):
    
     return http_found
 
-#Http thread launcher, you can modify the amount of threads running from the allowed variable
-def http_brute(url, wordlist, bad, bad_what):
+#Http thread launcher
+def http_brute(url, wordlist, bad, bad_what, web_threads):
      global http_found, trets, bt, allowed
      print(colored(f"[INFO] Http-File Discovery Started Against: {url}", "green"))
      http_found = []
@@ -218,7 +218,7 @@ def http_brute(url, wordlist, bad, bad_what):
      lines = open(wordlist, "r").readlines()
      bt = 0
      count_screen.loader(0, len(lines))
-     allowed = 40 #<--  Threads
+     allowed = web_threads
 
      #Starts threads
      for line in lines:
@@ -257,7 +257,7 @@ def http_brute(url, wordlist, bad, bad_what):
      return http_fdback
 
 #The first step, aka determining what to run and loads wordlists
-def http_check(host, p_s):
+def http_check(host, p_s, web_threads):
    http_feed_back = ""
    if p_s == "http":
       prefix = "http://"
@@ -273,7 +273,7 @@ def http_check(host, p_s):
     return colored(" [HTTP_ERROR] in running file discovery, server not responding or can't find a bad status code/response lenght\n", "cyan")
    wordlist = "wordlists/http-disco.txt"
 
-   http_feed_back = http_brute(url, wordlist, bad, whi)
+   http_feed_back = http_brute(url, wordlist, bad, whi, web_threads)
    print(colored("[INFO] Http-File Discovery Done!", "green"))
    return http_feed_back
 
@@ -636,10 +636,11 @@ def telnet_brute(host):
 #TELNET SECTION ENDS
 
 #Central hub to decide what scans to run
-def checks(host, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp):
+def checks(host, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp, web_threads):
      warnings.filterwarnings(action='ignore')
      only_https = False
      feed_back = ""
+     web_threads = int(web_threads)
 
      #Telnet brute...
      if telnet != "Fals":
@@ -693,7 +694,7 @@ def checks(host, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp):
                 pass
            if only_https: 
                print(colored("[INFO] Http to https redirect found, ignoring http port and continuing to scan https...", "green"))
-               http_s_results = http_check(host, "https")
+               http_s_results = http_check(host, "https", web_threads)
                feed_back = feed_back + http_s_results
                feed_back = feed_back + http_methods(host, "https")
 
@@ -707,7 +708,7 @@ def checks(host, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp):
            
             for proto in p_s:
              print(colored(f"[INFO] Scanning {proto}", "green"))
-             http_s_results = http_check(host, proto)
+             http_s_results = http_check(host, proto, web_threads)
              feed_back = feed_back + http_s_results
              feed_back = feed_back + http_methods(host, proto)
              
@@ -717,12 +718,12 @@ def checks(host, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp):
 
            if http != "Fals":
                p_s = "http"
-               http_s_results = http_check(host, p_s)
+               http_s_results = http_check(host, p_s, web_threads)
                feed_back = feed_back + http_s_results
                feed_back = feed_back + http_methods(host, p_s)
            elif https != "Fals":
                p_s = "https"
-               http_s_results = http_check(host, p_s)
+               http_s_results = http_check(host, p_s, web_threads)
                feed_back = feed_back + http_s_results
                feed_back = feed_back + http_methods(host, p_s)
            else:

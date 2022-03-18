@@ -4,13 +4,17 @@
   "-h": "necessary",
   "--scan-type": "necessary",
   "-s": "necessary",
-  "--dns-threads": "necessary"
+  "--dns-threads": "not_necessary",
+  "--web-threads": "not_necessary",
+  "-w": "not_necessary"
  },
  "description": {
   "--help": "Displays the help page",
   "-h": "Hostname to scan",
   "--scan-type": "Scan types: Validate, scan",
   "-s": "Subdomain find method: 1=Sublist3r 2=Wordlist 3=Only this domain",
-  "--dns-threads": "The amount of threads that will validate subdomains"
+  "--dns-threads": "The amount of threads that will validate subdomains (default=10)",
+  "--web-threads": "The amount of threads that will be requesting files in the http discovery phase (works only with scan scan_type) (Default:40)",
+  "-w": "Wordlist (used with -s 2)"
  }
 }
