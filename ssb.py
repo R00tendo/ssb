@@ -88,7 +88,7 @@ except:
 web_threads=parameters.web_threads
 
 scan_type = parameters.scan_type.lower()
-if scan_type != "validate" and scan_type != "scan":
+if scan_type != "validate" and scan_type != "scan" and scan_type != "light_scan":
    print("Invalid scan_type! Please look at the help page (--help) to see how to use this tool.")
    sys.exit(1)
 

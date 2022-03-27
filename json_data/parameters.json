@@ -11,7 +11,7 @@
  "description": {
   "--help": "Displays the help page",
   "-h": "Hostname to scan",
-  "--scan-type": "Scan types: Validate, scan",
+  "--scan-type": "Scan types: Validate, light_scan, scan    Validate=validates if subdomain exists light_scan=service detection      scan=all of the mentioned + bruteforce",
   "-s": "Subdomain find method: 1=Sublist3r 2=Wordlist 3=Only this domain",
   "--dns-threads": "The amount of threads that will validate subdomains (default=10)",
   "--web-threads": "The amount of threads that will be requesting files in the http discovery phase (works only with scan scan_type) (Default:40)",

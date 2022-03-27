@@ -73,8 +73,8 @@ def dns(subs, host, threads_allowed, scan_type, web_threads):
    if scan_type == "validate":
     for host in got:
        print(host)
-   elif scan_type == "scan":
-    print("\n\nHost                                |HTTP |HTTPS|SSH |TELNET|FTP |SMTP |RPCBIND|MYSQL|SMB |RDP")
+   else:
+    print("\nHost                                |HTTP |HTTPS|SSH |TELNET|FTP |SMTP |RPCBIND|MYSQL|SMB |RDP")
     print("-"*95)
 
     for subss in got:
@@ -118,10 +118,11 @@ def dns(subs, host, threads_allowed, scan_type, web_threads):
 
         print(f"{subss}{' ' * (36 - len(subss))}|{http} |{https} |{ssh}|{telnet}  |{ftp}|{smtp} |{rpcbind}   |{mysql} |{smb}|{rdp}")
 
-
+        resp = ""
         #This one line is responsible for all the additional scans aka ftp brute, file discovery, etc...
-        resp = additional.checks(subss, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp, web_threads)
-
+        if scan_type != "light_scan":
+         resp = additional.checks(subss, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp, web_threads)
+        
         #If feed_back lenght is over 2 characters print it out. You might be wondering why 2? well the answer to that question is that \n is 2 characters
         if len(resp) > 2:
              print(termcolor.colored(f"RESULTS:{' ' * 10}", "magenta"))
