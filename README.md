@@ -23,6 +23,8 @@ Update: Mark_v6: Added HTTP Method detection and PARAMIKO transport.py will get 
 Update: Mark_v7: Complete redisign of the ui, switching to flag based ui, you can decide wether to only validate or validate AND scan the subdomains
 
 Update: Mark_v8: Added flags and hotfixes
+
+Update: Mark_v9: Added new scan type: light_scan (only service detection)
 # Under dev?: Currently yes
 
 # BACKGROUND:
@@ -51,16 +53,20 @@ And you're done, now just launch the app using PYTHON3
 python3 ssb.py
 
 # Usage:
-
 --help   (not_necessary)    Displays the help page 
 
 -h   (necessary)    Hostname to scan 
 
---scan-type   (necessary)    Scan types: Validate, scan 
+--scan-type   (necessary)    Scan types: Validate, light_scan, scan    Validate=validates if subdomain exists light_scan=service detection      scan=all of the mentioned + bruteforce 
 
 -s   (necessary)    Subdomain find method: 1=Sublist3r 2=Wordlist 3=Only this domain 
 
---dns-threads   (necessary)    The amount of threads that will validate subdomains 
+--dns-threads   (not_necessary)    The amount of threads that will validate subdomains (default=10) 
+
+--web-threads   (not_necessary)    The amount of threads that will be requesting files in the http discovery phase (works only with scan scan_type) (Default:40) 
+
+-w   (not_necessary)    Wordlist (used with -s 2) 
+
 
 # Features
 <img src="https://user-images.githubusercontent.com/72181445/153476377-b250f42b-b0c0-4153-bc58-e42a9146d960.png" width=200></img>
