@@ -1,6 +1,6 @@
 # SSB
 ![image](https://user-images.githubusercontent.com/72181445/153228795-7346bd04-69eb-4205-9d27-c104ad7295ea.png)
-# Current version: Mark_V8
+# Current version: Mark_V10
 
 # Put on the night apparence mode so the logos look alot cooler :)
 
@@ -25,6 +25,8 @@ Update: Mark_v7: Complete redisign of the ui, switching to flag based ui, you ca
 Update: Mark_v8: Added flags and hotfixes
 
 Update: Mark_v9: Added new scan type: light_scan (only service detection)
+
+Update: Mark_v10: Flag ui upgraded to argparse 
 # Under dev?: Currently yes
 
 # BACKGROUND:
