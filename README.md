@@ -70,11 +70,11 @@ python3 ssb.py
 -w   (not_necessary)    Wordlist (used with -s 2) 
 
 # Examples:
-python3 ssb.py -h somerandomassdomain.com -s 1 --scan-type scan 
+python3 ssb.py -t somerandomassdomain.com -s 1 --scan-type scan 
 
-python3 ssb.py -h somerandomassdomain.com -s 2 -w subdomains.txt --scan-type light_scan
+python3 ssb.py -t somerandomassdomain.com -s 2 -w subdomains.txt --scan-type light_scan
 
-python3 ssb.py -h somerandomassdomain.com -s 1 --scan-type validate
+python3 ssb.py -t somerandomassdomain.com -s 1 --scan-type validate
 
 # Features:
 <img src="https://user-images.githubusercontent.com/72181445/153476377-b250f42b-b0c0-4153-bc58-e42a9146d960.png" width=200></img>
