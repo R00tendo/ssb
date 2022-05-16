@@ -1,0 +1,4 @@
+{
+"dns_threads": 10,
+"web_threads": 40
+}

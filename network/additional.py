@@ -704,7 +704,7 @@ def checks(host, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp, 
 
            else:
             #If not a redirect
-            p_s = ['http', 'https']
+            p_s = ('http', 'https')
            
             for proto in p_s:
              print(colored(f"[INFO] Scanning {proto}", "green"))
