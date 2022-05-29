@@ -1,0 +1,233 @@
+#!/usr/bin/python3
+#@R00tendo
+from screens import  load_screen
+from screens import  count_screen
+from network import  host_up
+from files   import  reader
+from network import  brute
+import threading
+import os
+import termcolor
+import time
+import sys
+import socket
+import paramiko
+import json
+import argparse
+import subprocess
+
+def set_default(parameters):
+  json_data = open("json_data/default.json").read().strip()
+  json_settings = json.loads(json_data)
+  for value_name in json_settings:
+    value = json_settings[value_name]
+    if hasattr(parameters, value_name):
+      setattr(parameters, value_name, value)
+  return parameters
+
+def get_parameters():
+  params = argparse.ArgumentParser()
+  
+  json_data = open("json_data/parameters.json").read()
+  json_settings = json.loads(json_data)
+  for param in json_settings['params']:
+      if json_settings['fullname'][param]:
+        fullname = json_settings['fullname'][param]
+      else:
+         fullname = param
+      if json_settings['params'][param] == "necessary":
+         params.add_argument(param, fullname, help=f"({termcolor.colored(json_settings['params'][param], 'red')}) {json_settings['description'][param]}")
+      else:
+        params.add_argument(param, fullname, help=f"({json_settings['params'][param]}) {json_settings['description'][param]}", nargs='?')
+  args = params.parse_args()
+  return args
+
+#Removes duplicates
+def rem_dup(domains):
+  doms = []
+  for domain in domains:
+    if domain not in doms and len(domain) != 0:
+      doms.append(domain)
+  return doms
+
+def main():
+        #It overwrites the paramiko transport.py file with the same one but with the errors removed so that the script works better
+        dest = paramiko.__file__.replace("__init__.py", "") + "transport.py"
+        src = "modules/paramiko/transport.py"
+        if os.path.exists(src):
+         if os.path.exists(dest):
+           if open(src).read() != open(dest).read():
+                  print(f"{dest} Was overwritten with a custom one that doesn't spam your screen with errors!")
+                  src_read = open(src, 'rb').read()
+                  dest_write = open(dest, 'wb').write(src_read)
+        #          os.system("cp  modules/paramiko/transport.py " + dest)
+
+
+        #Cool logo
+        banner = termcolor.colored("""
+                                                                                                            
+                                                                 ^???7.                                     
+                                                                :YYYY^                                      
+                                                                ?YJY~                                       
+                                                               !YJY?.                                       
+                                                              ~YJYJ:                                        
+                             :!7777777777^   .~7777777777!   :JYJY7^!!!777:                                 
+                            ^YYYYYYYJYYYY~  .JYYYYYYJYYYY?  .7YJJYYYYYYYYY~                                 
+                           :YJJJ:...7YYY7   ?YJY~ ..^YYYJ.  ~YJYJ~^::?YJY!                                  
+                           JYJYJ!:  :^^^.  !YJJJ7^. .^^^:  :YJJY:   !YJY?.                                  
+                           ~?JYYYY?!:      ^7JYYYYJ7~.    .JYJY~   ^YYJJ:                                   
+                             .~7JJYYYJ.      .^!JJJYYY~   7YJY7   :JYJY~                                    
+                        :7777.  .7YJY?.  ~777^   ~JJYJ^  ~YJYJ.   7YJY?                                     
+                       .?YYY?^^^^JJYJ:  ~YYYY~^^:7YJY!  :JJJY!:^^7YJYJ.                                     
+                       !YYYYYYYYYYYJ^  .YYYYYYYYYYYY7  .JYYYYYYYYYYYJ:                                      
+                       :~!!!!!!!!!^.    ~!!!!!!!!!~^   ^!!!!!!!!!~~:.                                       
+                                   @R00tendo at github                                                      
+                                                                                                            
+                                                                                                   
+        """, 'green')
+
+        print(banner.strip())
+
+        if len(sys.argv) < 2:
+          sys.argv.append('--help') 
+          
+        #Parameter section
+        parameters = get_parameters()
+        parameters = set_default(parameters)
+     
+
+
+
+        try:
+          dns_threads = parameters.dns_threads
+        except: 
+          print("Invalid dns_threads! Please look at the help page (--help) to see how to use this tool.")
+          sys.exit(1)
+
+
+        try:
+          int(parameters.scan_method)
+        except: 
+          print("Invalid Subdomain finding method! Please look at the help page (--help) to see how to use this tool.")
+          sys.exit(1)
+
+        try:
+          int(parameters.web_threads)
+        except: 
+          print("Invalid Web_Threads! Please look at the help page (--help) to see how to use this tool.")
+          sys.exit(1)
+        web_threads=parameters.web_threads
+
+        scan_type = parameters.scan_type.lower()
+        if scan_type != "validate" and scan_type != "scan" and scan_type != "light_scan":
+           print("Invalid scan_type! Please look at the help page (--help) to see how to use this tool.")
+           sys.exit(1)
+
+
+
+        #Host dead?
+        host = parameters.target
+        try:
+          socket.gethostbyname(host)
+        except:
+          print(f"Cannot resolve {host} to an ip...")
+          sys.exit(1)
+
+
+        print("Host is up or ip supplied!\n")
+
+        wordlist = parameters.wordlist
+        word_or_sub = parameters.scan_method
+
+        #Automated method
+        if word_or_sub == "1":
+            if len(os.popen("which sublist3r").read()) != 0 and len(os.popen("which assetfinder").read()) != 0 and len(os.popen("which findomain").read()) != 0:
+
+
+             load_screen.loader()
+             cmd = f"echo $(findomain -qt {host}) $(sublist3r -d {host} --no-color) $(assetfinder {host}) |sed \"s/ /\\n/g\" |grep {host}"
+             parse_out = subprocess.Popen(cmd,shell=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+             parse_out = parse_out.communicate()[0].decode('latin-1').split('\n')
+             parse_out = rem_dup(parse_out)
+             load_screen.stop_loading()
+             time.sleep(1)
+             subs = parse_out
+             host = False
+             print(f"Done! {' '*10}")
+             print(f"Automated scan found {len(parse_out)} subdomains!")
+            else:
+              print(termcolor.colored('ERROR one or more tool are missing!', 'red'))
+              for command in ['sublist3r', 'assetfinder', 'findomain']:
+               if len(os.popen(f'which {command}').read()) == 0:
+                print(termcolor.colored(f"[-] {command}", "red"))
+               else:
+                print(termcolor.colored(f"[+] {command}", "green"))
+              sys.exit(1)
+
+        elif word_or_sub == "2":
+            pass
+        elif word_or_sub == "3":
+            pass
+        else:
+            print("Invalid option, options are 1,2,3")
+            sys.exit(1) 
+
+
+
+        #Determines what to ask
+        if word_or_sub == "2":
+         pass
+
+        elif word_or_sub == "1":
+          wordlist = f"automated-{host}-ssb"
+
+        if word_or_sub != "3" and word_or_sub != "1":
+         if not os.path.exists(wordlist):
+            print(f"Cant find {wordlist} or wordlist not specified, if so please do so by using -w")
+            sys.exit(1)
+
+        if word_or_sub != "3":
+         allowed = str(dns_threads)
+
+        else:
+          allowed = "1"
+
+
+
+
+        if word_or_sub == "2":
+         print("\nLoading wordlist into memory...")
+        elif word_or_sub == "1":
+           print("Going trough the subdomains...")
+
+
+        #Loading screen
+        load_screen.loader()
+        time.sleep(0.4)
+
+        if word_or_sub != "3":
+          if word_or_sub == "2":
+            subs = reader.read(f"{wordlist}")
+        else:
+           subs = False
+
+
+        load_screen.stop_loading()
+        time.sleep(0.5)
+
+
+
+
+        if word_or_sub != "3":
+         print(f"Done, {len(subs)} words loaded! {' ' * 10}")
+
+        time.sleep(1)
+
+
+        #Our journey begins!
+        print("\nStarting DNS Bruteforce...")
+        brute.dns(subs, host, allowed, scan_type, web_threads)
+
+if __name__ == "__main__":
+  main()
+

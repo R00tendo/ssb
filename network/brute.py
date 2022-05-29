@@ -22,7 +22,10 @@ def subber(subs, host):
         time.sleep(1)
         ori = co + 400
       count_screen.set_value(co)
-      subcon = f"{sub.strip()}.{host.strip()}"
+      if host == False:
+        subcon = f"{sub.strip()}"
+      else:
+       subcon = f"{sub.strip()}.{host.strip()}"
       try:
          ip = socket.gethostbyname(subcon)
          got.append(subcon)
