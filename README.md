@@ -1,6 +1,6 @@
 # SSB
 ![image](https://user-images.githubusercontent.com/72181445/153228795-7346bd04-69eb-4205-9d27-c104ad7295ea.png)
-# Current version: Mark_V10
+# Current version: Mark_V11
 
 # Put on the night apparence mode so the logos look alot cooler :)
 
@@ -27,6 +27,9 @@ Update: Mark_v8: Added flags and hotfixes
 Update: Mark_v9: Added new scan type: light_scan (only service detection)
 
 Update: Mark_v10: Flag ui upgraded to argparse 
+
+Update: Mark_v11: ssb now uses 3 different programs to find subdomains (sublis3r,findomain,assetfinder)
+
 # Under dev?: Currently yes
 
 # BACKGROUND:
@@ -50,24 +53,46 @@ pip3 install smbprotocol
 
 pip3 install telnetlib
 
+apt install assetfinder
+
+wget https://github.com/findomain/findomain/releases/latest/download/findomain-linux
+
+chmod +x findomain-linux
+
+cp findomain-linux /usr/bin/findomain
+
+
 And you're done, now just launch the app using PYTHON3
 
 python3 ssb.py
 
-# Usage:
---help   (not_necessary)    Displays the help page 
-
--h   (necessary)    Hostname to scan 
-
---scan-type   (necessary)    Scan types: Validate, light_scan, scan    Validate=validates if subdomain exists light_scan=service detection      scan=all of the mentioned + bruteforce 
-
--s   (necessary)    Subdomain find method: 1=Sublist3r 2=Wordlist 3=Only this domain 
-
---dns-threads   (not_necessary)    The amount of threads that will validate subdomains (default=10) 
-
---web-threads   (not_necessary)    The amount of threads that will be requesting files in the http discovery phase (works only with scan scan_type) (Default:40) 
-
--w   (not_necessary)    Wordlist (used with -s 2) 
+# Usage:  
+  -h, --help            show this help message and exit
+ 
+  -t TARGET, --target TARGET
+                        (necessary) Target to scan
+                        
+  --scan-type SCAN_TYPE, --scan-type SCAN_TYPE
+                        (necessary) Scan types: Validate, light_scan,
+                        scan Validate=validates if subdomain exists
+                        light_scan=service detection scan=all of the mentioned
+                        + bruteforce
+                        
+  -s SCAN_METHOD, --scan-method SCAN_METHOD
+                        (necessary) Subdomain find method:
+                        1=Automated 2=Wordlist 3=Only this domain
+                        
+  --dns-threads [DNS_THREADS], --dns-threads [DNS_THREADS]
+                        (not_necessary) The amount of threads that will
+                        validate subdomains (default=10)
+                        
+  --web-threads [WEB_THREADS], --web-threads [WEB_THREADS]
+                        (not_necessary) The amount of threads that will be
+                        requesting files in the http discovery phase (works
+                        only with scan scan_type) (Default:40)
+                        
+  -w [WORDLIST], --wordlist [WORDLIST]
+                        (not_necessary) Wordlist (used with -s 2)
 
 # Examples:
 python3 ssb.py -t somerandomassdomain.com -s 1 --scan-type scan 
