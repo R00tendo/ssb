@@ -62,6 +62,9 @@ chmod +x findomain-linux
 
 cp findomain-linux /usr/bin/findomain
 
+git clone https://github.com/signedsecurity/sigurlfind3r.git && \
+cd sigurlfind3r/cmd/sigurlfind3r/ && \
+go build; mv sigurlfind3r /usr/local/bin/
 
 And you're done, now just launch the app using PYTHON3
 
