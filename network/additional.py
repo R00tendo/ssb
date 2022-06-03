@@ -9,6 +9,7 @@ import telnetlib
 import os
 import paramiko
 import time
+import subprocess
 import requests
 import random
 
@@ -42,7 +43,7 @@ def ftp_check(host):
          ftp = FTP(host)
          ftp.login()
          ftp.quit()
-         feed_back = feed_back + colored(" [FTP_SEVERE_MISCONFIGURATION] FTP ANONYMOUS LOGIN IS ENABLED!\n", "red")
+         feed_back = feed_back + colored(" [FTP_SEVERE_MISCONFIGURATION] FTP ANONYMOUS LOGIN IS ENABLED!", "red") + '\n'
        except:
          pass
 
@@ -251,7 +252,7 @@ def http_brute(url, wordlist, bad, bad_what, web_threads):
 
       http_fdback = ""
       for found in http_found:
-            http_fdback = http_fdback + colored(f" [{url.split(':')[0].upper().strip()}_CONTENT] {found.strip()}\n", "yellow")
+            http_fdback = http_fdback + colored(f" [{url.split(':')[0].upper().strip()}_CONTENT] {found.strip()}", "yellow") + '\n'
      else:
         http_fdback = ""
      return http_fdback
@@ -270,7 +271,7 @@ def http_check(host, p_s, web_threads):
    try:
     whi, bad = http_wrong_calc(url)
    except:
-    return colored(" [HTTP_ERROR] in running file discovery, server not responding or can't find a bad status code/response lenght\n", "cyan")
+    return colored(" [HTTP_ERROR] in running file discovery, server not responding or can't find a bad status code/response lenght", "cyan") + '\n'
    wordlist = "wordlists/http-disco.txt"
 
    http_feed_back = http_brute(url, wordlist, bad, whi, web_threads)
@@ -299,11 +300,11 @@ def http_methods(host, proto):
       for method in methods:
           method = method.strip().lower()
           if method == "put":
-               report = report + colored(" [HTTP_METHODS] The method PUT is listed as an option, this may not be actually allowed but it is listed as an option.\n", "red")
+               report = report + colored(" [HTTP_METHODS] The method PUT is listed as an option, this may not be actually allowed but it is listed as an option.", "red") + '\n'
           elif method == "delete":
-               report = report + colored(" [HTTP_METHODS] The method DELETE is listed as an option, this may not be actually allowed but it is listed as an option.\n", "red")
+               report = report + colored(" [HTTP_METHODS] The method DELETE is listed as an option, this may not be actually allowed but it is listed as an option.", "red") + '\n'
           elif method == "trace":
-               report = report + colored(" [HTTP_METHODS] The method TRACE is listed as an option, this may not be actually allowed but it is listed as an option.\n", "yellow")
+               report = report + colored(" [HTTP_METHODS] The method TRACE is listed as an option, this may not be actually allowed but it is listed as an option.", "yellow") + '\n'
       return report
    else:
      return ""
@@ -380,7 +381,7 @@ def ssh_brute(host):
           line = line.strip()
           username = line.split(":")[0]
           password = line.split(":")[1]
-          ssh_feed_back = ssh_feed_back + colored(f" [SSH_CREDENTIALS] SSH credentials cracked: Username:{username} Password:{password}\n", "red")
+          ssh_feed_back = ssh_feed_back + colored(f" [SSH_CREDENTIALS] SSH credentials cracked: Username:{username} Password:{password}", "red") + '\n'
     return ssh_feed_back
   
 #SSH SECTION STOPS
@@ -393,7 +394,7 @@ def rpcinfo_get(host):
    global rpc_info
    print(colored("[INFO] Getting Rpcbind Info, Please Be Patient...", "green"))
    info = os.popen(f"rpcinfo \"{host}\"").read()
-   info = colored(f" [RPCINFO]\n{info} [RPCINFO]\n", "yellow")
+   info = colored(f" [RPCINFO]\n", "yellow") + info + colored("[RPCINFO]\n", "yellow")
    rpc_info = info
    print(colored("[INFO] Rpcbind Info Getting Done!", "green"))
    return rpc_info
@@ -452,7 +453,7 @@ def mysql_brute(host):
    for rep in got:
         usa = rep.split(":")[0]
         pasa = rep.split(":")[1]
-        report = report + colored(f" [MYSQL_CREDENTIALS] MYSQL Credentials Cracked: Username:{usa} Password:{pasa}\n", "red")
+        report = report + colored(f" [MYSQL_CREDENTIALS] MYSQL Credentials Cracked: Username:{usa} Password:{pasa}", "red") + '\n'
 
    print(colored("[INFO] MYSQL Bruteforce Stops", "green"))
    return report
@@ -538,10 +539,13 @@ def smb_brute(host):
      for cred in got:
          username = cred.split(":")[0]
          password = cred.split(":")[1]
-         report = report + colored(f" [SMB_CREDENTIALS] SMB Credentials Cracked: Username: {username} Password: {password}\n", "red")
+         report = report + colored(f" [SMB_CREDENTIALS] SMB Credentials Cracked: Username: {username} Password: {password}", "red") + '\n'
     print(colored("[INFO] SMB Bruteforce Stopped", "green"))
     return report
 #SMB SECTION STOPS
+
+
+
 
 
 #TELNET SECTION STARTS
@@ -631,9 +635,27 @@ def telnet_brute(host):
         creds = creds.split(":")
         username = creds[0]
         password = creds[1]
-        report = report + colored(f" [TELNET_CREDENTIALS] Telnet Credentials Cracked: Username:{username} Password:{password}\n", "red")
+        report = report + colored(f" [TELNET_CREDENTIALS] Telnet Credentials Cracked: Username:{username} Password:{password}", "red") + '\n'
      return report
 #TELNET SECTION ENDS
+
+#URL FINDER
+def url_finder(host):
+    report = ""
+    print(colored("[INFO] Starting URL finding", "green"))
+    output = subprocess.check_output(f'sigurlfind3r -d  "{host}" -s -iS', shell=True).decode()
+    with open("wordlists/extensions") as lines:
+        for line in lines:
+            line = line.strip()
+            for check_against in output.split("\n"):
+              if f"http://{host}" in check_against or f"https://{host}" in check_against:
+                if check_against[len(check_against)-len(line)::] == line:
+                    report += colored(f' [SESITIVE_FILE] {check_against}', 'yellow') + '\n'
+    print(colored("[INFO] URL finding done!", "green"))
+    return report
+    
+#URL Finder end
+
 
 #Central hub to decide what scans to run
 def checks(host, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp, web_threads):
@@ -641,6 +663,9 @@ def checks(host, http, https, ssh, telnet, ftp, smtp, rpcbind, mysql, smb, rdp, 
      only_https = False
      feed_back = ""
      web_threads = int(web_threads)
+     #Url finder
+     if http != "Fals" or https != "Fals":
+        feed_back = feed_back + url_finder(host)
 
      #Telnet brute...
      if telnet != "Fals":

@@ -139,6 +139,14 @@ def main():
         wordlist = parameters.wordlist
         word_or_sub = parameters.scan_method
 
+
+        if scan_type == "scan":
+          if len(os.popen("which sigurlfind3r").read()) == 0:
+            print(termcolor.colored("[-] Sigurlfind3r is missing!", "red"))
+            sys.exit(1)
+
+
+
         #Automated method
         if word_or_sub == "1":
             if len(os.popen("which sublist3r").read()) != 0 and len(os.popen("which assetfinder").read()) != 0 and len(os.popen("which findomain").read()) != 0:
