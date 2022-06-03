@@ -1,6 +1,6 @@
 # SSB
 ![image](https://user-images.githubusercontent.com/72181445/153228795-7346bd04-69eb-4205-9d27-c104ad7295ea.png)
-# Current version: Mark_V11
+# Current version: Mark_V11.2.1
 
 # Put on the night apparence mode so the logos look alot cooler :)
 
@@ -30,6 +30,7 @@ Update: Mark_v10: Flag ui upgraded to argparse
 
 Update: Mark_v11: ssb now uses 3 different programs to find subdomains (sublis3r,findomain,assetfinder)
 
+Update: Mark_v11.2.1: Added url discovery and finding sensitive files in those urls, fixed bug in color handling
 # Under dev?: Currently yes
 
 # BACKGROUND:
@@ -132,6 +133,7 @@ Http/Https File Discovery
 
 Http/Https Method Scan
 
+Url discovery, sensitive file discovery
 
 <img src="https://user-images.githubusercontent.com/72181445/153479607-5ba66053-b54b-408c-9ac1-ca7e373cb083.png" width=200></img>
 
@@ -141,6 +143,8 @@ Telnet Bruteforce
 <img src="https://user-images.githubusercontent.com/72181445/153480235-d4598870-1175-4b6b-b739-676b9f12f34a.png" width=200></img>
 
 Rpcbind Process Lister
+
+
 
 
 # TECHNICAL DETAILS:
@@ -154,7 +158,7 @@ Rpcbind Process Lister
 +Validates HTTP and HTTPS ports by actually making a request instead of relying off the fact that it is open (many http/https ports that i've seen in the wild are timeouts)
 
 
--+Easy to use so that it is fast for pen-testers but also script kiddies can operate this which is bad (Unlike nmap which needs flags to be set right)...
+-+Easy to use so that it is fast for pen-testers but also script kiddies can operate this which is bad...
 
 +Automatically scans subdomains without having the need for the hassle of scanning subdomains, making a list, nmap scanning them.
 
