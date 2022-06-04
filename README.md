@@ -1,6 +1,6 @@
 # SSB
 ![image](https://user-images.githubusercontent.com/72181445/153228795-7346bd04-69eb-4205-9d27-c104ad7295ea.png)
-# Current version: Mark_V11.2.1
+# Current version: Mark_V13.3.2
 
 # Put on the night apparence mode so the logos look alot cooler :)
 
@@ -31,6 +31,8 @@ Update: Mark_v10: Flag ui upgraded to argparse
 Update: Mark_v11: ssb now uses 3 different programs to find subdomains (sublis3r,findomain,assetfinder)
 
 Update: Mark_v11.2.1: Added url discovery and finding sensitive files in those urls, fixed bug in color handling
+
+Update: Mark_v13.3.2: Added target list mode, colored errors, fixed alot of stuff :D
 # Under dev?: Currently yes
 
 # BACKGROUND:
@@ -72,9 +74,12 @@ python3 ssb.py
 
 # Usage:  
   -h, --help            show this help message and exit
- 
-  -t TARGET, --target TARGET
-                        (necessary) Target to scan
+  
+  -t [TARGET], --target [TARGET]
+                        (not_necessary) Target to scan
+                        
+  -tl [TARGET_LIST], --target-list [TARGET_LIST]
+                        (not_necessary) Target list (used with -s 4)
                         
   --scan-type SCAN_TYPE, --scan-type SCAN_TYPE
                         (necessary) Scan types: Validate, light_scan,
@@ -84,7 +89,8 @@ python3 ssb.py
                         
   -s SCAN_METHOD, --scan-method SCAN_METHOD
                         (necessary) Subdomain find method:
-                        1=Automated 2=Wordlist 3=Only this domain
+                        1=Automated 2=Wordlist 3=Only this domain 4=Read
+                        targets from a list (no subdomain enumeration)
                         
   --dns-threads [DNS_THREADS], --dns-threads [DNS_THREADS]
                         (not_necessary) The amount of threads that will
@@ -105,6 +111,7 @@ python3 ssb.py -t somerandomassdomain.com -s 2 -w subdomains.txt --scan-type lig
 
 python3 ssb.py -t somerandomassdomain.com -s 1 --scan-type validate
 
+python3 ssb.py -tl hosts.txt -s 4 --scan-type scan
 # Features:
 <img src="https://user-images.githubusercontent.com/72181445/153476377-b250f42b-b0c0-4153-bc58-e42a9146d960.png" width=200></img>
 
