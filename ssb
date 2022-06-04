@@ -36,7 +36,7 @@ def get_parameters():
       else:
          fullname = param
       if json_settings['params'][param] == "necessary":
-         params.add_argument(param, fullname, help=f"({termcolor.colored(json_settings['params'][param], 'red')}) {json_settings['description'][param]}")
+         params.add_argument(param, fullname, help=f"({termcolor.colored(json_settings['params'][param], 'red')}) {json_settings['description'][param]}", required=True)
       else:
         params.add_argument(param, fullname, help=f"({json_settings['params'][param]}) {json_settings['description'][param]}", nargs='?')
   args = params.parse_args()
@@ -50,6 +50,11 @@ def rem_dup(domains):
       doms.append(domain)
   return doms
 
+def error(text):
+  return termcolor.colored(text, 'red')
+
+def success(text):
+  return termcolor.colored(text, 'green')
 def main():
         #It overwrites the paramiko transport.py file with the same one but with the errors removed so that the script works better
         dest = paramiko.__file__.replace("__init__.py", "") + "transport.py"
@@ -101,48 +106,67 @@ def main():
         try:
           dns_threads = parameters.dns_threads
         except: 
-          print("Invalid dns_threads! Please look at the help page (--help) to see how to use this tool.")
+          print(error("Invalid dns_threads! Please look at the help page (--help) to see how to use this tool."))
           sys.exit(1)
 
 
         try:
           int(parameters.scan_method)
         except: 
-          print("Invalid Subdomain finding method! Please look at the help page (--help) to see how to use this tool.")
+          print(error("Invalid Subdomain finding method! Please look at the help page (--help) to see how to use this tool."))
           sys.exit(1)
 
         try:
           int(parameters.web_threads)
         except: 
-          print("Invalid Web_Threads! Please look at the help page (--help) to see how to use this tool.")
+          print(error("Invalid Web_Threads! Please look at the help page (--help) to see how to use this tool."))
           sys.exit(1)
+        
         web_threads=parameters.web_threads
 
         scan_type = parameters.scan_type.lower()
         if scan_type != "validate" and scan_type != "scan" and scan_type != "light_scan":
-           print("Invalid scan_type! Please look at the help page (--help) to see how to use this tool.")
+           print(error("Invalid scan_type! Please look at the help page (--help) to see how to use this tool."))
            sys.exit(1)
 
 
-
+        wordlist = parameters.wordlist
+        word_or_sub = parameters.scan_method
+        try:
+          if word_or_sub == "4":
+           parameters.target = "0.0.0.0"
+           wordlist = parameters.target_list
+          else:
+            pass 
+        except:
+           print(error("target list (-tl) not specified when using -s 4."))
+           sys.exit(1)
         #Host dead?
         host = parameters.target
         try:
           socket.gethostbyname(host)
         except:
-          print(f"Cannot resolve {host} to an ip...")
+          print(error(f"Cannot resolve {host} to an ip..."))
           sys.exit(1)
 
 
         print("Host is up or ip supplied!\n")
 
-        wordlist = parameters.wordlist
-        word_or_sub = parameters.scan_method
+
+
+        try:
+          if word_or_sub == "4":
+           str(parameters.target_list)
+          else:
+            pass 
+        except:
+           print(error("Invalid scan_type! Please look at the help page (--help) to see how to use this tool."))
+           sys.exit(1)
 
 
         if scan_type == "scan":
           if len(os.popen("which sigurlfind3r").read()) == 0:
-            print(termcolor.colored("[-] Sigurlfind3r is missing!", "red"))
+            print(error("[-] Sigurlfind3r is missing!"))
             sys.exit(1)
 
 
@@ -161,23 +185,30 @@ def main():
              time.sleep(1)
              subs = parse_out
              host = False
-             print(f"Done! {' '*10}")
-             print(f"Automated scan found {len(parse_out)} subdomains!")
+             print(success(f"Done! {' '*10}"))
+             print(success(f"Automated scan found {len(parse_out)} subdomains!"))
             else:
-              print(termcolor.colored('ERROR one or more tool are missing!', 'red'))
+              print(error('ERROR one or more tool are missing!'))
               for command in ['sublist3r', 'assetfinder', 'findomain']:
                if len(os.popen(f'which {command}').read()) == 0:
-                print(termcolor.colored(f"[-] {command}", "red"))
+                print(error(f"[-] {command}"))
                else:
-                print(termcolor.colored(f"[+] {command}", "green"))
+                print(success(f"[+] {command}"))
               sys.exit(1)
 
         elif word_or_sub == "2":
             pass
         elif word_or_sub == "3":
             pass
+        elif word_or_sub == "4":
+            host = False
+            try:
+             subs = reader.read(wordlist)
+            except:
+              print(error(f"[ERROR] Can't find wordlist {wordlist}"))
+              sys.exit(1)
         else:
-            print("Invalid option, options are 1,2,3")
+            print("Invalid option, options are 1,2,3,4")
             sys.exit(1) 
 
 
@@ -186,12 +217,13 @@ def main():
         if word_or_sub == "2":
          pass
 
-        elif word_or_sub == "1":
-          wordlist = f"automated-{host}-ssb"
+     
+          
 
-        if word_or_sub != "3" and word_or_sub != "1":
+        no_wordlist = ['1', '3', '4']
+        if word_or_sub not in no_wordlist:
          if not os.path.exists(wordlist):
-            print(f"Cant find {wordlist} or wordlist not specified, if so please do so by using -w")
+            print(error(f"Cant find {wordlist} or wordlist not specified, if so please do so by using -w"))
             sys.exit(1)
 
         if word_or_sub != "3":
@@ -204,19 +236,18 @@ def main():
 
 
         if word_or_sub == "2":
-         print("\nLoading wordlist into memory...")
+         print(success("\nLoading wordlist into memory..."))
         elif word_or_sub == "1":
-           print("Going trough the subdomains...")
+           print(success("Going trough the subdomains..."))
 
 
         #Loading screen
         load_screen.loader()
         time.sleep(0.4)
 
-        if word_or_sub != "3":
-          if word_or_sub == "2":
+        if word_or_sub == "2":
             subs = reader.read(f"{wordlist}")
-        else:
+        elif word_or_sub not in ['4', '1']:
            subs = False
 
 
@@ -227,13 +258,13 @@ def main():
 
 
         if word_or_sub != "3":
-         print(f"Done, {len(subs)} words loaded! {' ' * 10}")
+         print(success(f"Done, {len(subs)} words loaded! {' ' * 10}"))
 
         time.sleep(1)
 
 
         #Our journey begins!
-        print("\nStarting DNS Bruteforce...")
+        print(success("\nStarting DNS Bruteforce..."))
         brute.dns(subs, host, allowed, scan_type, web_threads)
 
 if __name__ == "__main__":

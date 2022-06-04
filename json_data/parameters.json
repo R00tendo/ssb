@@ -1,6 +1,7 @@
 {
 "params": {
- "-t": "necessary",
+ "-t": "not_necessary",
+ "-tl": "not_necessary",
  "--scan-type": "necessary",
  "-s": "necessary",
  "--dns-threads": "not_necessary",
@@ -9,13 +10,15 @@
 },
 "description": {
  "-t": "Target to scan",
+ "-tl": "Target list (used with -s 4)",
  "--scan-type": "Scan types: Validate, light_scan, scan    Validate=validates if subdomain exists light_scan=service detection      scan=all of the mentioned + bruteforce",
- "-s": "Subdomain find method: 1=Automated 2=Wordlist 3=Only this domain",
+ "-s": "Subdomain find method: 1=Automated 2=Wordlist 3=Only this domain 4=Read targets from a list (no subdomain enumeration)",
  "--dns-threads": "The amount of threads that will validate subdomains (default=10)",
  "--web-threads": "The amount of threads that will be requesting files in the http discovery phase (works only with scan scan_type) (Default:40)",
  "-w": "Wordlist (used with -s 2)"
 },
 "fullname": {
+ "-tl": "--target-list",
  "-t": "--target",
  "-s": "--scan-method",
  "-w": "--wordlist",

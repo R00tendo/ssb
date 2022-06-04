@@ -394,7 +394,7 @@ def rpcinfo_get(host):
    global rpc_info
    print(colored("[INFO] Getting Rpcbind Info, Please Be Patient...", "green"))
    info = os.popen(f"rpcinfo \"{host}\"").read()
-   info = colored(f" [RPCINFO]\n", "yellow") + info + colored("[RPCINFO]\n", "yellow")
+   info = colored(f" [RPCINFO]\n", "yellow") + info + colored(" [RPCINFO]\n", "yellow")
    rpc_info = info
    print(colored("[INFO] Rpcbind Info Getting Done!", "green"))
    return rpc_info
