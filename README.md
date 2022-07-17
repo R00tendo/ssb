@@ -33,7 +33,7 @@ Update: Mark_v11: ssb now uses 3 different programs to find subdomains (sublis3r
 Update: Mark_v11.2.1: Added url discovery and finding sensitive files in those urls, fixed bug in color handling
 
 Update: Mark_v13.3.2: Added target list mode, colored errors, fixed alot of stuff :D
-# Under dev?: Currently yes
+# Under dev?: Only bug fixes
 
 # BACKGROUND:
 I started this project on 2.2.2022
