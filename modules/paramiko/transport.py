@@ -26,6 +26,8 @@ import os
 import socket
 import sys
 import threading
+import warnings
+warnings.simplefilter('ignore')
 import time
 import weakref
 from hashlib import md5, sha1, sha256, sha512
