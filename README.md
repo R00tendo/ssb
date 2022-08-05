@@ -49,6 +49,7 @@ And you're done, now just launch the app using PYTHON3
 python3 ssb
 
 # Usage:  
+```
   -h, --help            show this help message and exit
   
   -t [TARGET], --target [TARGET]
@@ -79,8 +80,9 @@ python3 ssb
                         
   -w [WORDLIST], --wordlist [WORDLIST]
                         (not_necessary) Wordlist (used with -s 2)
-
+```
 # Examples:
+```
 python3 ssb.py -t somerandomassdomain.com -s 1 --scan-type scan 
 
 python3 ssb.py -t somerandomassdomain.com -s 2 -w subdomains.txt --scan-type light_scan
@@ -88,6 +90,7 @@ python3 ssb.py -t somerandomassdomain.com -s 2 -w subdomains.txt --scan-type lig
 python3 ssb.py -t somerandomassdomain.com -s 1 --scan-type validate
 
 python3 ssb.py -tl hosts.txt -s 4 --scan-type scan
+```
 # Features:
 <img src="https://user-images.githubusercontent.com/72181445/153476377-b250f42b-b0c0-4153-bc58-e42a9146d960.png" width=200></img>
 
