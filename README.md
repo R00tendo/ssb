@@ -39,14 +39,13 @@ Update: Mark_v13.3.2: Added target list mode, colored errors, fixed alot of stuf
 I started this project on 2.2.2022
 
 # HOW TO SETUP:
-
+```
 chmod +x install.sh
-
 ./install.sh
-
+```
 And you're done, now just launch the app using PYTHON3
 
-python3 ssb
+`python3 ssb`
 
 # Usage:  
 ```
@@ -83,13 +82,13 @@ python3 ssb
 ```
 # Examples:
 ```
-python3 ssb.py -t somerandomassdomain.com -s 1 --scan-type scan 
+./ssb -t somerandomassdomain.com -s 1 --scan-type scan 
 
-python3 ssb.py -t somerandomassdomain.com -s 2 -w subdomains.txt --scan-type light_scan
+./ssb -t somerandomassdomain.com -s 2 -w subdomains.txt --scan-type light_scan
 
-python3 ssb.py -t somerandomassdomain.com -s 1 --scan-type validate
+./ssb -t somerandomassdomain.com -s 1 --scan-type validate
 
-python3 ssb.py -tl hosts.txt -s 4 --scan-type scan
+./ssb -tl hosts.txt -s 4 --scan-type scan
 ```
 # Features:
 <img src="https://user-images.githubusercontent.com/72181445/153476377-b250f42b-b0c0-4153-bc58-e42a9146d960.png" width=200></img>
