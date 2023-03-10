@@ -1,17 +1,19 @@
-# SSB
+# THIS PROJECT IS NO L0NGER MAINTAINED, PLEASE USE AWACS-SCANNER INSTEAD
+
+## SSB
 ![image](https://user-images.githubusercontent.com/72181445/153228795-7346bd04-69eb-4205-9d27-c104ad7295ea.png)
-# Current version: Mark_V13.3.3
+### Current version: Mark_V13.3.3
 
-# Put on the night apparence mode so the logos look alot cooler :)
+## Put on the night apparence mode so the logos look alot cooler :)
 
-# Description
+## Description
 SSB=simple subdomain bruteforcer
 
 SSB Tries to find subdomains for a domain and scan them for ports/services. When SSB has identified all of the services the subdomain is running, it will then scan the services for common misconfigurations and credentials.
 
 SSB  scans the subdomains for the most common ports and services i've seen in the wild.
 
-# Update log (only major updates)
+## Update log (only major updates)
 Update: Mark_v0: Scans for ports in the found subdomains.
 
 Update: Mark_v3: SSH Bruteforce added and ftp threads increased, problems with report generating solved.
@@ -33,12 +35,12 @@ Update: Mark_v11: ssb now uses 3 different programs to find subdomains (sublis3r
 Update: Mark_v11.2.1: Added url discovery and finding sensitive files in those urls, fixed bug in color handling
 
 Update: Mark_v13.3.2: Added target list mode, colored errors, fixed alot of stuff :D
-# Under dev?: Only bug fixes
+## Under dev?: NO
 
-# BACKGROUND:
+## BACKGROUND:
 I started this project on 2.2.2022
 
-# HOW TO SETUP:
+## HOW TO SETUP:
 ```
 chmod +x install.sh
 ./install.sh
@@ -47,7 +49,7 @@ And you're done, now just launch the app using PYTHON3
 
 `python3 ssb`
 
-# Usage:  
+## Usage:  
 ```
   -h, --help            show this help message and exit
   
@@ -80,7 +82,7 @@ And you're done, now just launch the app using PYTHON3
   -w [WORDLIST], --wordlist [WORDLIST]
                         (not_necessary) Wordlist (used with -s 2)
 ```
-# Examples:
+## Examples:
 ```
 ./ssb -t somerandomassdomain.com -s 1 --scan-type scan 
 
@@ -135,7 +137,7 @@ Rpcbind Process Lister
 
 
 
-# TECHNICAL DETAILS:
+## TECHNICAL DETAILS:
 
 +Uses DNS resolving instead of a port specific or ping scan.
 
